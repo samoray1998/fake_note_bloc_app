@@ -1,3 +1,4 @@
+import 'package:fake_note_block/controllers/categoriesController.dart';
 import 'package:fake_note_block/controllers/noteController.dart';
 import 'package:fake_note_block/data/moor_database.dart';
 import 'package:fake_note_block/ui/pages/notes/addNotesPage.dart';
@@ -14,6 +15,7 @@ class NotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     NoteController noteController = Get.put(NoteController(db));
+    CategoriesController cc = Get.put(CategoriesController(db));
 
     return Scaffold(
       drawer: myDrawer(db),
@@ -30,7 +32,14 @@ class NotePage extends StatelessWidget {
                 return ListView.builder(
                     itemCount: nn.notes.value.length,
                     itemBuilder: (_, index) {
+                      var element = cc.categories.firstWhere(
+                          (x) => x.id == nn.notes[index].categoryId,
+                          orElse: () => null);
+
                       return Card(
+                        color: (element == null)
+                            ? Colors.white
+                            : Color(element.seconderyColor),
                         child: ListTile(
                           title: Text(nn.notes[index].descreption),
                           subtitle: Text(

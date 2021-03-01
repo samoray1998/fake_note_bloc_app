@@ -1,6 +1,7 @@
 import 'package:fake_note_block/common/consts/listofColors.dart';
 import 'package:fake_note_block/controllers/categoriesController.dart';
 import 'package:fake_note_block/data/moor_database.dart';
+import 'package:fake_note_block/ui/pages/categories/categoryPage.dart';
 import 'package:fake_note_block/ui/widgets/widgetColorPicker.dart';
 import 'package:flutter/material.dart';
 
@@ -86,7 +87,11 @@ Drawer myDrawer(AppDatabase db) {
                       "Edit",
                       style: TextStyle(color: Colors.blue),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => EditCategory(
+                            db: db,
+                          ));
+                    },
                   ),
                 ),
               ),
