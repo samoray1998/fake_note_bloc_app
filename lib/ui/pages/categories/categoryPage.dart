@@ -1,5 +1,6 @@
 import 'package:fake_note_block/controllers/categoriesController.dart';
 import 'package:fake_note_block/data/moor_database.dart';
+import 'package:fake_note_block/ui/widgets/myTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,7 @@ class EditCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     CategoriesController categoriesController =
         Get.put(CategoriesController(db));
     return Scaffold(
@@ -22,13 +24,12 @@ class EditCategory extends StatelessWidget {
         title: Text("Edit Categories .."),
         centerTitle: true,
         elevation: 0.5,
-        actions: [IconButton(icon: Icon(Icons.check), onPressed: () {})],
       ),
       body: GetBuilder<CategoriesController>(
         builder: (CategoriesController cc) {
           return Container(
             child: Obx(() => ListView.separated(
-                  itemCount: cc.categories.value.length,
+                  itemCount: cc.categories.value.length - 1,
                   itemBuilder: (_, index) {
                     TextEditingController _textEditingController =
                         new TextEditingController();
@@ -39,18 +40,9 @@ class EditCategory extends StatelessWidget {
                           icon: Icon(Icons.book,
                               color: Color(cc.categories[index].primaryColor)),
                           onPressed: () {}),
-                      title: TextField(
-                        key: UniqueKey(),
-                        controller: _textEditingController,
-                        autofocus: false,
-                        decoration: InputDecoration(
-                            hintText: "Write what you thinking now ..!",
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none),
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                        keyboardType: TextInputType.multiline,
+                      title: MyTextField(
+                        index: index,
+                        db: db,
                       ),
                       trailing: IconButton(
                         icon: Icon(

@@ -1,3 +1,4 @@
+import 'package:fake_note_block/common/consts/listofColors.dart';
 import 'package:fake_note_block/controllers/categoriesController.dart';
 import 'package:fake_note_block/controllers/noteController.dart';
 import 'package:fake_note_block/data/moor_database.dart';
@@ -29,24 +30,46 @@ class NotePage extends StatelessWidget {
               );
             } else {
               if (nn.hasData.value) {
-                return ListView.builder(
-                    itemCount: nn.notes.value.length,
-                    itemBuilder: (_, index) {
-                      var element = cc.categories.firstWhere(
-                          (x) => x.id == nn.notes[index].categoryId,
-                          orElse: () => null);
+                return Obx(
+                  () => ListView.builder(
+                      itemCount: nn.notes.value.length,
+                      itemBuilder: (_, index) {
+                        return Card(
+                          color: Color(nn.noteCategories[index].seconderyColor),
+                          child: ListTile(
+                            onTap: () {
+                              //print(index);
+                              Get.to(() => AddNotesPage(
+                                    db: db,
+                                    index: index,
+                                  ));
+                            },
+                            onLongPress: () {
+                              var deleted = nn.notes[index];
+                              nn.deleteNote(index, deleted);
 
-                      return Card(
-                        color: (element == null)
-                            ? Colors.white
-                            : Color(element.seconderyColor),
-                        child: ListTile(
-                          title: Text(nn.notes[index].descreption),
-                          subtitle: Text(
-                              nn.notes[index].date.toString().split(' ')[0]),
-                        ),
-                      );
-                    });
+                              Get.snackbar(
+                                  "hello world", "would you like to delete",
+                                  mainButton: FlatButton(
+                                      onPressed: () {
+                                        if (deleted == null) {
+                                          return;
+                                        }
+                                        nn.notes.insert(index, deleted);
+                                        deleted = null;
+                                        if (Get.isSnackbarOpen) {
+                                          Get.back();
+                                        }
+                                      },
+                                      child: Text("Undo")));
+                            },
+                            title: Text(nn.notes[index].descreption),
+                            subtitle: Text(
+                                nn.notes[index].date.toString().split(' ')[0]),
+                          ),
+                        );
+                      }),
+                );
               } else {
                 return Center(
                   child: Text("You have no notes yet ..!"),

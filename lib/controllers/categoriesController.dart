@@ -7,13 +7,14 @@ class CategoriesController extends GetxController {
   CategoriesController(this.db);
   var categories = List<Categorie>().obs;
   var colorIndex = RxInt(null);
+
   CategoryDaos _categoryDaos;
   @override
   void onInit() async {
     _categoryDaos = new CategoryDaos(db);
     categories.value = await _categoryDaos.getAllCategories();
     categories.value.add(Categorie(
-        id: null,
+        id: -1,
         name: "No Category",
         primaryColor: defultColor.primaryColor,
         seconderyColor: defultColor.secondryColor));
@@ -25,10 +26,20 @@ class CategoriesController extends GetxController {
     //categories.value.add(categorie);
     categories.value = await _categoryDaos.getAllCategories();
     categories.value.add(Categorie(
-        id: null,
+        id: -1,
         name: "No Category",
         primaryColor: defultColor.primaryColor,
         seconderyColor: defultColor.secondryColor));
     update();
+  }
+
+  void editCategory(Categorie categorie) async {
+    _categoryDaos.updateCategory(categorie);
+    categories.value = await _categoryDaos.getAllCategories();
+    categories.value.add(Categorie(
+        id: -1,
+        name: "No Category",
+        primaryColor: defultColor.primaryColor,
+        seconderyColor: defultColor.secondryColor));
   }
 }
